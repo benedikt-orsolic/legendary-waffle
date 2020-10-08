@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<html>
+  
+  
+  
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snake</title>
+
+</head>
+
+
+
+<style>
+
+  button {
+    min-height: 12vw;
+    min-width: 12vw;
+    
+    color: grey;
+    border: solid black 2px;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #game-grid{
+    display: grid;
+    min-height: 100vw;
+    min-width: 100vw;
+    
+    grid-template-columns: repeat(25, 4vw);
+    grid-template-rows: repeat(25, 4vw);
+    grid-column-gap: 0;
+    grid-row-gap: 0;
+    background-color: grey;
+    
+    overflow: hidden;
+  }
+  
+  #directionButtonGrid{
+    display: grid;
+    grid-template-columns: repeat (3, auto);
+    grid-template-rows: repeat(3, auto);
+  }
+  
+  .snake-block {
+    background-color: red;
+    height: 2vw;
+    width: 2vw;
+    border: 1vw solid black;
+    padding: 0;
+  }
+  
+  .food-block {
+    background-color: blue;
+    height: 2vw;
+    width: 2vw;
+    border: 1vw solid white;
+    padding: 0;
+  }
+</style>
+
+
+
+<script>
+  var snake, food, direction, loopVar, foodEaten, startTime;
+  
+  function startStopReset(reset){
+    
+    if( reset ) {
+      resetGame();
+      render();
+      return;
+    }
+    
+    if( typeof loopVar == "undefined" ) {
+      loopVar = window.setInterval(gameLoop, 200);
+      document.getElementById("startStop").innerHTML = "Stop";
+    
+    } else {
+      clearTimeout(loopVar);
+      loopVar = undefined;
+      document.getElementById("startStop").innerHTML = "Start";
+    }
+  }
+  
+  function gameLoop(){
+    moveSnake ();
+    
+    //Extend snake if head land on food block
+    if( snake[0].x == food.x && snake[0].y == food.y  ){
+      
+      //So food doesnt become body right under head and cause end of game
+      food.x = snake[1].x;
+      food.y = snake[1].y;
+      
+      
+      snake.push(food);
+      foodEaten += 1;
+      food = new Coordinate(rnd(1,25), rnd(1,25));
+    }
+    
+    //End game if snake head land on any other part of snake
+    if( snakeHeadInConlict() ){
+      window.alert(
+        "End of game with " + 
+        String(foodEaten) + 
+        " peaces of food eaten in " +
+        String( (Date.now() - startTime) / 1000 ) +
+        "s."
+      );
+      resetGame();
+      
+    }
+    
+    render();
+  }
+  
+  function resetGame(){
+    food = new Coordinate (rnd(1,25),rnd(1,25));
+    foodEaten = 0;
+    direction = rnd(0,4) - 1;
+    snake = [ new Coordinate(13,13) ];
+    console.log(String (direction));
+    
+    startTime = new Date();
+    switch ( direction ){
+      case 0:
+        //Up
+        snake.push( new Coordinate(13, 14));
+        snake.push( new Coordinate(13, 15));
+        break;
+      case 1:
+        //Left
+        snake.push( new Coordinate(14, 13));
+        snake.push( new Coordinate(15, 13));
+        break;
+      case 2:
+        //Down
+        snake.push( new Coordinate(13, 12));
+        snake.push( new Coordinate(13, 11));
+        break;
+      case 3:
+        //Right
+        snake.push( new Coordinate(12, 13));
+        snake.push( new Coordinate(11, 13));
+        break;
+    }
+  }
+  
+  function snakeHeadInConlict() {
+    
+    var s = snake[0];
+    for( i=1; i < snake.length; i++ ) {
+      if ( s.x == snake[i].x && s.y == snake[i].y) return true;
+      
+    }
+    
+    return false;
+  }
+  
+  function changeDirection (d){
+    if ( direction == 0 && d == 2) return;
+    if ( direction == 2 && d == 0) return;
+    if ( direction == 1 && d == 3) return;
+    if ( direction == 3 && d == 1) return;
+    direction = d;
+  }
+  
+  function moveSnake(){
+    
+    var last =snake.pop();
+    
+    switch ( direction ){
+      case 0:
+        //Up
+        last.x = snake[0].x;
+        last.y = snake[0].y - 1 ? snake[0].y - 1 : 25;
+        break;
+      case 1:
+        //Left
+        last.x = snake[0].x - 1 ? snake [0].x -1 : 25;
+        last.y = snake[0].y;
+        break;
+      case 2:
+        //Down
+        last.x = snake[0].x;
+        last.y = snake[0].y + 1 == 26? 1 : snake [0].y + 1;
+        break;
+      case 3:
+        //Right
+        last.x = snake[0].x + 1 == 26 ? 1 : snake [0].x + 1;
+        last.y = snake[0].y;
+        break;
+    }
+    
+    snake.unshift( last );
+  }
+  
+  function render(){
+    document.getElementById("game-grid").innerHTML = '';
+    printSnake();
+    document.getElementById("game-grid").innerHTML += 
+      '<div class="food-block" style="grid-column: ' + String(food.x) + ' / span 1; grid-row: ' + String(food.y) + ' / span 1;"></div>';
+      
+  }
+  
+  function printSnake (){
+
+    for( s of snake) {
+      document.getElementById("game-grid").innerHTML += 
+      '<div class="snake-block" style="grid-column: ' + String(s.x) + ' / span 1; grid-row: ' + String(s.y) + ' / span 1;"></div>';
+    }
+  }
+  
+  function Coordinate (inX, inY) {
+    this.x = inX;
+    this.y = inY;
+  }
+  
+  function rnd(a, b){
+    return Math.floor((Math.random() * (b-a) + 1) + a);
+  }
+</script>
+
+
+
+<body onload="startStopReset(1)">
+  <div id="game-grid">
+    
+  </div>
+  
+  <div id="directionButtonGrid">
+    <button onclick="changeDirection(0)" style="grid-column: 2 / span 1; grid-row: 1 / span 1;">Up</button>
+    <button onclick="changeDirection(1)" style="grid-column: 1 / span 1; grid-row: 2 / span 1;">Left</button>
+    <button onclick="changeDirection(2)" style="grid-column: 2 / span 1; grid-row: 3 / span 1;">Down</button>
+    <button onclick="changeDirection(3)" style="grid-column: 3 / span 1; grid-row: 2 / span 1;">Right</button>
+  </div>
+  
+  <button id="startStop" onclick="startStopReset(0)">Start</button>
+  <button onclick="startStopReset(1)">Reset</button>
+</body>
+
+
+
+
+
+
+
+
+
+
+
+</html>
