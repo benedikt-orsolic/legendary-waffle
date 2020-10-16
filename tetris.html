@@ -9,117 +9,217 @@
 
 
 <script>
-  
+
   var dropedPieces = undefined;
   var currentPiece = undefined;
   var currentPieceCenter = undefined;
   var nextPiece = undefined;
-  
+
   //To test new code manually
-  function testing(dir){
+  function testing(dir) {
     currentPiece = getT(dir);
-    currentPieceCenter = {x:0, y:0};
-    
+    currentPieceCenter = {
+      x: 2,
+      y: 0
+    };
+
+
     setInterval(gameLoop, 500);
   }
-  
-  async function gameLoop(){
-    
+
+
+
+  async function gameLoop() {
+
     currentPieceCenter.y += 1;
     render(currentPieceCenter);
-    
-    
+
+    if (lowestPartInContact()) {
+      addCurrentToDropedPieces();
+      setNewCurrentPiece();
+    }
   }
-  
+
+  function lowestPartInContact() {
+    console.log('hello');
+    for (b of currentPiece) {
+      if (dropedPieces[b.x][b.y + 1] != undefined &&
+        b.y + 1 > 25) return true;
+
+    }
+    return false;
+  }
+  function setNewCurrentPiece() {
+    currentPiece = nextPiece;
+    currentPieceCenter = {
+      x: 5,
+      y: 0
+    };
+    nextPiece = getT(0);
+
+  }
+  function addCurrentToDropedPieces() {
+    for (b of currentPiece) {
+      dropedPieces[b.x][b.y] = 1;
+    }
+  }
   function render(center) {
     document.getElementById("game-grid").innerHTML = "";
-    
-    
-    for( b of currentPiece ) {
-      console.log( document.getElementById("game-grid").innerHTML );
-      document.getElementById("game-grid").innerHTML += 
-      '<div class="block" style="grid-column: ' + String(center.x + b.x) + 
+
+    for (b of currentPiece) {
+      
+      document.getElementById("game-grid").innerHTML +=
+      '<div class="block" style="grid-column: ' + String(center.x + b.x) +
       ' / span 1; grid-row: ' + String(center.y + b.y) + ' / span 1;"></div>';
     }
+
+    for (i; i < 10; i++) {
+      for (j; j < 25; j++) {
+        document.getElementById("game-grid").innerHTML +=
+        '<div class="block" style="grid-column: ' + String(i) +
+        ' / span 1; grid-row: ' + String(j) + ' / span 1;"></div>';
+
+      }
+    }
   }
-  
+
   function setUp() {
-    
+
     //Init dropedPieces 2D Array
-    dropedPieces = new Array( 10 );
-    for ( i of dropedPieces ) {
-      i = new Array().apply(null, Array(25)).map( function (){});
+    dropedPieces = new Array(10);
+    for (i of dropedPieces) {
+      i = new Array().apply(null, Array(25)).map(function () {});
     }
   }
-  
+
   function getT(direction) {
-    switch ( direction ) {
+    switch (direction) {
       case 0:
-        return [{x:0, y:0}, {x:-1, y:0}, {x:1,y:0}, {x:0, y:-1}];
-      case 1:
-        return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:-1, y:0}];
-      case 2:
-        return [{x:0, y:0}, {x:-1, y:0}, {x:1, y:0}, {x:0, y:1}];
-      case 3: 
-        return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:1, y:0}];
+        return [{
+          x: 0,
+          y: 0
+        },
+          {
+            x: -1,
+            y: 0
+          },
+          {
+            x: 1,
+            y: 0
+          },
+          {
+            x: 0,
+            y: -1
+          }];
+        case 1:
+          return [{
+            x: 0,
+            y: 0
+          },
+            {
+              x: 0,
+              y: -1
+            },
+            {
+              x: 0,
+              y: 1
+            },
+            {
+              x: -1,
+              y: 0
+            }];
+          case 2:
+            return [{
+              x: 0,
+              y: 0
+            },
+              {
+                x: -1,
+                y: 0
+              },
+              {
+                x: 1,
+                y: 0
+              },
+              {
+                x: 0,
+                y: 1
+              }];
+            case 3:
+              return [{
+                x: 0,
+                y: 0
+              },
+                {
+                  x: 0,
+                  y: -1
+                },
+                {
+                  x: 0,
+                  y: 1
+                },
+                {
+                  x: 1,
+                  y: 0
+                }];
+          }
+      }
+    </script>
+
+
+
+    <body>
+      <div id="game-grid">
+        <div class="food-block" style="grid-row: 20 / span 1; grid-column: 10 / span 1;"></div>
+      </div>
+      <div id="preview-grid"></div>
+      <button onclick="testing(0)">render</button>
+    </body>
+
+
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
     }
-  }
-</script>
 
+    #game-grid {
+      display: grid;
+      height: 100vw;
+      width: 40vw;
 
- 
-<body>
-  <div id="game-grid">
-    <div class="food-block" style="grid-row: 20 / span 1; grid-column: 10 / span 1;"></div>
-  </div>
-  <div id="preview-grid"></div>
-  <button onclick="testing(0)">render</button>
-</body>
+      grid-template-columns: repeat(10, 4vw);
+      grid-template-rows: repeat(25, 4vw);
+      grid-column-gap: 0;
+      grid-row-gap: 0;
 
+      background-color: #505050;
 
+      overflow: hidden;
 
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-  }
-  
-  #game-grid {
-    display: grid;
-    height: 100vw;
-    width: 40vw;
-    
-    grid-template-columns: repeat(10, 4vw);
-    grid-template-rows: repeat(25, 4vw);
-    grid-column-gap: 0;
-    grid-row-gap: 0;
-    
-    background-color: #505050;
-    
-    overflow: hidden;
-    
-  }
-  
-  #preview-grid {
-    
-    width: 16vw;
-    height:16vw;
-    grid-template-columns: repeat(4, 4vw);
-    grid-template-rows: repeat(4,4vw);
-    grid-column-gap: 0;
-    grid-row-gap: 0;
-    
-    background-color: blue;
-  }
-  
+    }
+
+    #preview-grid {
+
+      width: 16vw;
+      height: 16vw;
+      grid-template-columns: repeat(4, 4vw);
+      grid-template-rows: repeat(4,4vw);
+      grid-column-gap: 0;
+      grid-row-gap: 0;
+
+      background-color: blue;
+    }
+
     .block {
-    background-color: blue;
-    height: 2vw;
-    width: 2vw;
-    border: 1vw solid white;
-    padding: 0;
-  }
-</style>
+      background-color: blue;
+      height: 2vw;
+      width: 2vw;
+      border: 1vw solid white;
+      padding: 0;
+    }
+  </style>
 
 
 
