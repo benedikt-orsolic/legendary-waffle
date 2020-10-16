@@ -10,23 +10,45 @@
 
 <script>
   
+  var dropedPieces = undefined;
   var currentPiece = undefined;
+  var currentPieceCenter = undefined;
+  var nextPiece = undefined;
   
   //To test new code manually
- function testing(dir){
+  function testing(dir){
     currentPiece = getT(dir);
+    currentPieceCenter = {x:0, y:0};
     
-    document.getElementById("game-grid").innerHTML = "";
-    render();
+    setInterval(gameLoop, 500);
+  }
+  
+  async function gameLoop(){
+    
+    currentPieceCenter.y += 1;
+    render(currentPieceCenter);
+    
     
   }
   
-  function render() {
-    var center = {x:5, y:10};
+  function render(center) {
+    document.getElementById("game-grid").innerHTML = "";
+    
+    
     for( b of currentPiece ) {
       console.log( document.getElementById("game-grid").innerHTML );
       document.getElementById("game-grid").innerHTML += 
-      '<div class="block" style="grid-column: ' + String(center.x + b.x) + ' / span 1; grid-row: ' + String(center.y + b.y) + ' / span 1;"></div>';
+      '<div class="block" style="grid-column: ' + String(center.x + b.x) + 
+      ' / span 1; grid-row: ' + String(center.y + b.y) + ' / span 1;"></div>';
+    }
+  }
+  
+  function setUp() {
+    
+    //Init dropedPieces 2D Array
+    dropedPieces = new Array( 10 );
+    for ( i of dropedPieces ) {
+      i = new Array().apply(null, Array(25)).map( function (){});
     }
   }
   
