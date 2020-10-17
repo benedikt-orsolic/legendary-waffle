@@ -18,11 +18,7 @@
   //To test new code manually
   function testing(dir) {
     currentPiece = getT(dir);
-    currentPieceCenter = {
-      x: 2,
-      y: 0
-    };
-
+    currentPieceCenter = {x:2, y:0};
 
     setInterval(gameLoop, 500);
   }
@@ -49,6 +45,7 @@
     }
     return false;
   }
+  
   function setNewCurrentPiece() {
     currentPiece = nextPiece;
     currentPieceCenter = {
@@ -58,11 +55,13 @@
     nextPiece = getT(0);
 
   }
+  
   function addCurrentToDropedPieces() {
     for (b of currentPiece) {
       dropedPieces[b.x][b.y] = 1;
     }
   }
+  
   function render(center) {
     document.getElementById("game-grid").innerHTML = "";
 
@@ -95,76 +94,16 @@
   function getT(direction) {
     switch (direction) {
       case 0:
-        return [{
-          x: 0,
-          y: 0
-        },
-          {
-            x: -1,
-            y: 0
-          },
-          {
-            x: 1,
-            y: 0
-          },
-          {
-            x: 0,
-            y: -1
-          }];
-        case 1:
-          return [{
-            x: 0,
-            y: 0
-          },
-            {
-              x: 0,
-              y: -1
-            },
-            {
-              x: 0,
-              y: 1
-            },
-            {
-              x: -1,
-              y: 0
-            }];
-          case 2:
-            return [{
-              x: 0,
-              y: 0
-            },
-              {
-                x: -1,
-                y: 0
-              },
-              {
-                x: 1,
-                y: 0
-              },
-              {
-                x: 0,
-                y: 1
-              }];
-            case 3:
-              return [{
-                x: 0,
-                y: 0
-              },
-                {
-                  x: 0,
-                  y: -1
-                },
-                {
-                  x: 0,
-                  y: 1
-                },
-                {
-                  x: 1,
-                  y: 0
-                }];
-          }
-      }
-    </script>
+        return [{x: 0,y: 0},{x: -1,y: 0},{x:1, y:0}, {x:0, y:-1}];
+      case 1:
+        return [{x:0, y:0}, {x: 0, y:-1}, {x:0, y:1}, {x:-1,y:0}];
+      case 2:
+        return [{x:0, y:0}, {x:-1, y:0}, {x:1, y:0}, {x:0, y:1}];
+      case 3:
+        return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:1, y:0}];
+    }
+  }
+</script>
 
 
 
