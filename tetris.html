@@ -14,13 +14,14 @@
   var currentPiece = undefined;
   var currentPieceCenter = undefined;
   var nextPiece = undefined;
+  var loopVar = undefined;
 
   //To test new code manually
-  function testing(dir) {
+  function startGame(dir) {
     currentPiece = getT(dir);
     currentPieceCenter = {x:2, y:0};
 
-    setInterval(gameLoop, 500);
+    loopVar = setInterval(gameLoop, 500);
   }
 
 
@@ -107,62 +108,57 @@
 
 
 
-    <body>
-      <div id="game-grid">
-        <div class="food-block" style="grid-row: 20 / span 1; grid-column: 10 / span 1;"></div>
-      </div>
-      <div id="preview-grid"></div>
-      <button onclick="testing(0)">render</button>
-    </body>
+<body>
+  <div id="game-grid">
+    <div class="block" style="grid-row: 20 / span 1; grid-column: 10 / span 1;"></div>
+  </div>
+  <div id="preview-grid"></div>
+  <button onclick="startGame(0)">render</button>
+</body>
 
 
 
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-    }
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+  }
 
-    #game-grid {
-      display: grid;
-      height: 100vw;
-      width: 40vw;
+  #game-grid {
+    display: grid;
+    height: 100vw;
+    width: 40vw;
 
-      grid-template-columns: repeat(10, 4vw);
-      grid-template-rows: repeat(25, 4vw);
-      grid-column-gap: 0;
-      grid-row-gap: 0;
+    grid-template-columns: repeat(10, 4vw);
+    grid-template-rows: repeat(25, 4vw);
+    grid-column-gap: 0;
+    grid-row-gap: 0;
 
-      background-color: #505050;
+    background-color: #505050;
 
-      overflow: hidden;
+    overflow: hidden;
 
-    }
+  }
 
-    #preview-grid {
+  #preview-grid {
 
-      width: 16vw;
-      height: 16vw;
-      grid-template-columns: repeat(4, 4vw);
-      grid-template-rows: repeat(4,4vw);
-      grid-column-gap: 0;
-      grid-row-gap: 0;
+    width: 16vw;
+    height: 16vw;
+    grid-template-columns: repeat(4, 4vw);
+    grid-template-rows: repeat(4,4vw);
+    grid-column-gap: 0;
+    grid-row-gap: 0;
 
-      background-color: blue;
-    }
+    background-color: blue;
+  }
 
-    .block {
-      background-color: blue;
-      height: 2vw;
-      width: 2vw;
-      border: 1vw solid white;
-      padding: 0;
-    }
-  </style>
-
-
-
-
-
+  .block {
+    background-color: blue;
+    height: 2vw;
+    width: 2vw;
+    border: 1vw solid white;
+    padding: 0;
+  }
+</style>
 
 </html>
