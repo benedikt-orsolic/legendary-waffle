@@ -20,7 +20,8 @@
   function startGame(dir) {
     currentPiece = getT(dir);
     currentPieceCenter = {x:2, y:0};
-
+    setUp();
+    dropedPieces[2][10] = 1;
     loopVar = setInterval(gameLoop, 500);
   }
 
@@ -29,66 +30,66 @@
   async function gameLoop() {
 
     currentPieceCenter.y += 1;
-    render(currentPieceCenter);
-
-    if (lowestPartInContact()) {
+    render();
+    
+    if( lowestPartInContact() ) {
+      
       addCurrentToDropedPieces();
       setNewCurrentPiece();
-    }
+    } 
+    //console.log(currentPieceCenter.y.toString());
   }
 
   function lowestPartInContact() {
-    console.log('hello');
     for (b of currentPiece) {
-      if (dropedPieces[b.x][b.y + 1] != undefined &&
-        b.y + 1 > 25) return true;
+    
+     if ( b.y + currentPieceCenter.y >= 24) return 1;
 
     }
-    return false;
+    return 0;
   }
   
   function setNewCurrentPiece() {
     currentPiece = nextPiece;
-    currentPieceCenter = {
-      x: 5,
-      y: 0
-    };
+    currentPieceCenter = {x:5, y:0};
     nextPiece = getT(0);
 
   }
   
   function addCurrentToDropedPieces() {
     for (b of currentPiece) {
-      dropedPieces[b.x][b.y] = 1;
+      dropedPieces[b.x + currentPieceCenter.x][b.y + currentPieceCenter.y] = 1;
     }
   }
   
-  function render(center) {
+  function render() {
     document.getElementById("game-grid").innerHTML = "";
 
     for (b of currentPiece) {
       
       document.getElementById("game-grid").innerHTML +=
-      '<div class="block" style="grid-column: ' + String(center.x + b.x) +
-      ' / span 1; grid-row: ' + String(center.y + b.y) + ' / span 1;"></div>';
+      '<div class="block" style="grid-column: ' + String(currentPieceCenter.x + b.x + 1) +
+      ' / span 1; grid-row: ' + String(currentPieceCenter.y + b.y + 1) + ' / span 1;"></div>';
     }
-
-    for (i; i < 10; i++) {
-      for (j; j < 25; j++) {
-        document.getElementById("game-grid").innerHTML +=
-        '<div class="block" style="grid-column: ' + String(i) +
-        ' / span 1; grid-row: ' + String(j) + ' / span 1;"></div>';
+    
+    for (var i=0; i < 10; i++) {
+      for (var j=0; j < 25; j++) {
+        if( dropedPieces[i][j] == 1 )
+          document.getElementById("game-grid").innerHTML +=
+          '<div class="block" style="grid-column: ' + String(i + 1) +
+          ' / span 1; grid-row: ' + String(j + 1) + ' / span 1;"></div>';
 
       }
     }
+    
   }
 
   function setUp() {
-
+    nextPiece = getT(0);
     //Init dropedPieces 2D Array
     dropedPieces = new Array(10);
-    for (i of dropedPieces) {
-      i = new Array().apply(null, Array(25)).map(function () {});
+    for (var i=0; i<10; i++) {
+      dropedPieces[i] = new Array(25).map(function () { return 0; });
     }
   }
 
