@@ -49,6 +49,20 @@
       this.arr = this.getT();
     }
     
+    moveL() {
+      for( b of this.arr ){
+        if( b.x + this.cen.x <= 0) return;
+      }
+      this.cen.x--;
+    }
+    
+    moveR() {
+      for ( b of this.arr ){
+        if ( b.x + this.cen.x >= 9 ) return;
+      }
+      this.cen.x++;
+    }
+    
   }
   
   
@@ -146,6 +160,8 @@
   <button onclick="startGame(0)">render</button>
   <button onclick="cPiece.ccw()">CCW</button>
   <button onclick="cPiece.cw()">CW</button>
+  <button onclick="cPiece.moveL()">Left</button>
+  <button onclick="cPiece.moveR()">Right</button>
 </body>
 
 
