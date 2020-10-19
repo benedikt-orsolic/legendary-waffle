@@ -65,7 +65,7 @@
   //To test new code manually
   function startGame(dir) {
     setUp();
-    loopVar = setInterval(gameLoop, 100);
+    loopVar = setInterval(gameLoop, 200);
   }
 
   async function gameLoop() {
@@ -74,7 +74,6 @@
     render();
     
     if( lowestPartInContact() ) {
-      
       addCurrentToDropedPieces();
       setNewCurrentPiece();
     } 
@@ -93,7 +92,7 @@
   
   function setNewCurrentPiece() {
     cPiece = nPiece;
-    nPiece = Piece();
+    nPiece = new Piece();
   }
   
   function addCurrentToDropedPieces() {
@@ -133,6 +132,7 @@
     for (var i=0; i<10; i++) {
       dropedPieces[i] = new Array(25).map(function () { return 0; });
     }
+    dropedPieces[5][24] = 1;
   }
   
   
