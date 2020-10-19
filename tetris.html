@@ -49,8 +49,6 @@
       this.arr = this.getT();
     }
     
-    
-    
   }
   
   
@@ -59,13 +57,15 @@
   var cPiece = undefined;  //Current
   var nPiece = undefined;  //Next
   
-  //
+  //Tracks if game is running
   var loopVar = undefined;
 
   //To test new code manually
   function startGame(dir) {
     setUp();
-    loopVar = setInterval(gameLoop, 200);
+    
+    //Prevent multiple timers running
+    loopVar = loopVar == undefined ? setInterval(gameLoop, 200) : loopVar;
   }
 
   async function gameLoop() {
@@ -77,15 +77,12 @@
       addCurrentToDropedPieces();
       setNewCurrentPiece();
     } 
-    //console.log(currentPieceCenter.y.toString());
   }
 
   function lowestPartInContact() {
     for (b of cPiece.arr) {
-    
      if ( b.y + cPiece.cen.y >= 24 ||
           dropedPieces[b.x + cPiece.cen.x][b.y + cPiece.cen.y + 1] == 1) return 1;
-
     }
     return 0;
   }
@@ -102,15 +99,18 @@
   }
   
   function render() {
+    
+    //Clear screen
     document.getElementById("game-grid").innerHTML = "";
-
+    
+    //Print current piece
     for (b of cPiece.arr) {
-      
       document.getElementById("game-grid").innerHTML +=
       '<div class="block" style="grid-column: ' + String(cPiece.cen.x + b.x + 1) +
       ' / span 1; grid-row: ' + String(cPiece.cen.y + b.y + 1) + ' / span 1;"></div>';
     }
     
+    //Print droped pieces
     for (var i=0; i < 10; i++) {
       for (var j=0; j < 25; j++) {
         if( dropedPieces[i][j] == 1 )
@@ -120,10 +120,10 @@
 
       }
     }
-    
   }
 
   function setUp() {
+    
     nPiece = new Piece ();
     cPiece = new Piece ();
     
@@ -132,11 +132,7 @@
     for (var i=0; i<10; i++) {
       dropedPieces[i] = new Array(25).map(function () { return 0; });
     }
-    dropedPieces[5][24] = 1;
   }
-  
-  
-
   
 </script>
 
