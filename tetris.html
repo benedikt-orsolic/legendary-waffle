@@ -9,27 +9,68 @@
 
 
 <script>
-
+  class Piece{
+    //add track of which piece 
+    //? function pointer
+    
+    //this.arr = undefined; // Stores arr of coordinates
+    //this.rot = undefined; // Which way its pointing
+    //this.cen = undefined; //What is center of rotation
+    
+    constructor(){
+      // Will create new random piece later
+      this.rot = 0;
+      this.arr = this.getT();
+      this.cen = {x:5, y:0};
+    }
+    
+    getT() {
+      switch ( this.rot ) {
+        case 0:
+         return [{x: 0,y: 0},{x: -1,y: 0},{x:1, y:0}, {x:0, y:-1}];
+        case 1:
+          return [{x:0, y:0}, {x: 0, y:-1}, {x:0, y:1}, {x:-1,y:0}];
+        case 2:
+          return [{x:0, y:0}, {x:-1, y:0}, {x:1, y:0}, {x:0, y:1}];
+        case 3:
+          return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:1, y:0}];
+      }
+    }
+    
+    cw(){
+      this.rot -= 1;
+      this.rot = this.rot < 0 ? 3 : this.rot;
+      this.arr = this.getT();
+    }
+    
+    ccw(){
+      this.rot += 1;
+      this.rot = this.rot > 3 ? 0 : this.rot;
+      this.arr = this.getT();
+    }
+    
+    
+    
+  }
+  
+  
   var dropedPieces = undefined;
-  var currentPiece = undefined;
-  var currentPieceCenter = undefined;
-  var nextPiece = undefined;
+  
+  var cPiece = undefined;  //Current
+  var nPiece = undefined;  //Next
+  
+  //
   var loopVar = undefined;
 
   //To test new code manually
   function startGame(dir) {
-    currentPiece = getT(dir);
-    currentPieceCenter = {x:2, y:0};
     setUp();
-    dropedPieces[2][10] = 1;
-    loopVar = setInterval(gameLoop, 500);
+    loopVar = setInterval(gameLoop, 100);
   }
-
-
 
   async function gameLoop() {
 
-    currentPieceCenter.y += 1;
+    cPiece.cen.y += 1;
     render();
     
     if( lowestPartInContact() ) {
@@ -41,35 +82,34 @@
   }
 
   function lowestPartInContact() {
-    for (b of currentPiece) {
+    for (b of cPiece.arr) {
     
-     if ( b.y + currentPieceCenter.y >= 24) return 1;
+     if ( b.y + cPiece.cen.y >= 24 ||
+          dropedPieces[b.x + cPiece.cen.x][b.y + cPiece.cen.y + 1] == 1) return 1;
 
     }
     return 0;
   }
   
   function setNewCurrentPiece() {
-    currentPiece = nextPiece;
-    currentPieceCenter = {x:5, y:0};
-    nextPiece = getT(0);
-
+    cPiece = nPiece;
+    nPiece = Piece();
   }
   
   function addCurrentToDropedPieces() {
-    for (b of currentPiece) {
-      dropedPieces[b.x + currentPieceCenter.x][b.y + currentPieceCenter.y] = 1;
+    for (b of cPiece.arr) {
+      dropedPieces[b.x + cPiece.cen.x][b.y + cPiece.cen.y] = 1;
     }
   }
   
   function render() {
     document.getElementById("game-grid").innerHTML = "";
 
-    for (b of currentPiece) {
+    for (b of cPiece.arr) {
       
       document.getElementById("game-grid").innerHTML +=
-      '<div class="block" style="grid-column: ' + String(currentPieceCenter.x + b.x + 1) +
-      ' / span 1; grid-row: ' + String(currentPieceCenter.y + b.y + 1) + ' / span 1;"></div>';
+      '<div class="block" style="grid-column: ' + String(cPiece.cen.x + b.x + 1) +
+      ' / span 1; grid-row: ' + String(cPiece.cen.y + b.y + 1) + ' / span 1;"></div>';
     }
     
     for (var i=0; i < 10; i++) {
@@ -85,26 +125,19 @@
   }
 
   function setUp() {
-    nextPiece = getT(0);
+    nPiece = new Piece ();
+    cPiece = new Piece ();
+    
     //Init dropedPieces 2D Array
     dropedPieces = new Array(10);
     for (var i=0; i<10; i++) {
       dropedPieces[i] = new Array(25).map(function () { return 0; });
     }
   }
+  
+  
 
-  function getT(direction) {
-    switch (direction) {
-      case 0:
-        return [{x: 0,y: 0},{x: -1,y: 0},{x:1, y:0}, {x:0, y:-1}];
-      case 1:
-        return [{x:0, y:0}, {x: 0, y:-1}, {x:0, y:1}, {x:-1,y:0}];
-      case 2:
-        return [{x:0, y:0}, {x:-1, y:0}, {x:1, y:0}, {x:0, y:1}];
-      case 3:
-        return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:1, y:0}];
-    }
-  }
+  
 </script>
 
 
@@ -115,6 +148,8 @@
   </div>
   <div id="preview-grid"></div>
   <button onclick="startGame(0)">render</button>
+  <button onclick="cPiece.ccw()">CCW</button>
+  <button onclick="cPiece.cw()">CW</button>
 </body>
 
 
