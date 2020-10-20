@@ -82,12 +82,37 @@
     }
     
     clearFullRow(){
-    //Todo
-    //for( j=0; j<25; k++)
-   //   for( i=0; i<10; i++)
- //       if 
+      
+      for(var i=0; i<ROWS; i++ ){
+      
+        var isFull = 1;
+        
+        //Check if row is full
+        for( var j=0; j<COLUMNS; j++ ){
+          if ( this.arr[i][j] != 1 ){
+            
+            isFull = 0;
+            break;
+          }
+        }
+        
+        if( isFull ) {
+          
+          //Clear row
+          for ( var j=0; j<COLUMNS; j++ ) this.arr[i][j] = 0;
+          
+          //Move cleared row to the top
+          this.arr.unshift(this.arr.splice(i, 1));
+          
+          //So we stay at same index 
+          //if droped row is also full
+          //TODO test it!
+          i--;
+        }
+        
+      }
+    }
   }
- }
   
   
   var dPieces = undefined;  //droppedPieces
@@ -116,6 +141,7 @@
       setNewCurrentPiece();
     }
     
+    dPieces.clearFullRow();
   }
 
   function lowestPartInContact() {
