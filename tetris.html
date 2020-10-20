@@ -9,6 +9,11 @@
 
 
 <script>
+  var ROWS = 25;
+  var COLUMNS = 10;
+  
+  
+  
   class Piece{
     //add track of which piece 
     //? function pointer
@@ -65,8 +70,27 @@
     
   }
   
+  class droppedPieces {
+    
+    //this.arr[row][column]
+    constructor() {
+      this.arr = new Array( 25 );
+      for (var i=0; i<ROWS; i++) {
+        this.arr[i] = new Array( 10 ).map(function () { return 0; });
+      }
+      this.arr[24][9] = 1;
+    }
+    
+    clearFullRow(){
+    //Todo
+    //for( j=0; j<25; k++)
+   //   for( i=0; i<10; i++)
+ //       if 
+  }
+ }
   
-  var dropedPieces = undefined;
+  
+  var dPieces = undefined;  //droppedPieces
   
   var cPiece = undefined;  //Current
   var nPiece = undefined;  //Next
@@ -90,13 +114,16 @@
     if( lowestPartInContact() ) {
       addCurrentToDropedPieces();
       setNewCurrentPiece();
-    } 
+    }
+    
   }
 
   function lowestPartInContact() {
     for (b of cPiece.arr) {
-     if ( b.y + cPiece.cen.y >= 24 ||
-          dropedPieces[b.x + cPiece.cen.x][b.y + cPiece.cen.y + 1] == 1) return 1;
+      if ( b.y + cPiece.cen.y >= ROWS - 1 ||
+          dPieces.arr[b.y + cPiece.cen.y + 1][b.x + cPiece.cen.x] == 1) {
+            return 1;
+      }      
     }
     return 0;
   }
@@ -108,7 +135,7 @@
   
   function addCurrentToDropedPieces() {
     for (b of cPiece.arr) {
-      dropedPieces[b.x + cPiece.cen.x][b.y + cPiece.cen.y] = 1;
+      dPieces.arr[b.y + cPiece.cen.y][b.x + cPiece.cen.x] = 1;
     }
   }
   
@@ -125,12 +152,12 @@
     }
     
     //Print droped pieces
-    for (var i=0; i < 10; i++) {
-      for (var j=0; j < 25; j++) {
-        if( dropedPieces[i][j] == 1 )
+    for (var i=0; i < ROWS; i++) {
+      for (var j=0; j < COLUMNS; j++) {
+        if( dPieces.arr[i][j] == 1 )
           document.getElementById("game-grid").innerHTML +=
-          '<div class="block" style="grid-column: ' + String(i + 1) +
-          ' / span 1; grid-row: ' + String(j + 1) + ' / span 1;"></div>';
+            '<div class="block" style="grid-column: ' + String(j + 1) +
+            ' / span 1; grid-row: ' + String(i + 1) + ' / span 1;"></div>';
 
       }
     }
@@ -142,11 +169,10 @@
     cPiece = new Piece ();
     
     //Init dropedPieces 2D Array
-    dropedPieces = new Array(10);
-    for (var i=0; i<10; i++) {
-      dropedPieces[i] = new Array(25).map(function () { return 0; });
-    }
+    dPieces = new droppedPieces();
   }
+  
+  
   
 </script>
 
