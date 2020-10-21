@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML>                                                                                       
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,35 +23,102 @@
     //this.cen = undefined; //What is center of rotation
     
     constructor(){
-      // Will create new random piece later
+      
+      this.pieceList = [
+        function (dir) {
+          //T
+          switch ( dir ) {
+              case 0:
+                return [{x: 0,y: 0},{x: -1,y: 0},{x:1, y:0}, {x:0, y:-1}];
+              case 1:
+                return [{x:0, y:0}, {x: 0, y:-1}, {x:0, y:1}, {x:-1,y:0}];
+              case 2:
+                return [{x:0, y:0}, {x:-1, y:0}, {x:1, y:0}, {x:0, y:1}];
+              case 3:
+                return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:1, y:0}];
+            }
+        }, 
+        function (dir) {
+          //I
+          switch( dir ){
+            case 0:
+            case 2:
+              return [{x:0, y:0}, {x:0, y:1}, {x:0, y:2}, {x:0, y:3}];
+            case 1:
+            case 3:
+              return [{x:0, y:0}, {x:1, y:0}, {x:2, y:0}, {x:3, y:0}];
+            }
+            return [{x:0, y:0}]
+        },
+        function (dir) {
+          //Left z
+          switch ( dir ){
+            case 0:
+            case 2:
+              return [{x:0, y:0}, {x:-1, y:0}, {x:0, y:1}, {x:1, y:1}];
+            case 1:
+            case 3:
+              return [{x:0, y:0}, {x:0, y:-1}, {x:-1, y:0}, {x:-1, y:1}];
+          }
+        },
+        function (dir) {
+          //Right z
+          switch ( dir ){
+            case 0:
+            case 2:
+              return [{x:0, y:0}, {x:1, y:0}, {x:0, y:1}, {x:-1, y:1}];
+            case 1:
+            case 3:
+              return [{x:0, y:0}, {x:0, y:-1}, {x:1, y:0}, {x:1, y:1}];
+          }
+        },
+        function (dir) {
+          //Left L 
+          switch ( dir ){
+            case 0:
+              return [{x:0, y:0}, {x:-1, y:0}, {x:1, y:0}, {x:1, y:1}];
+            case 1:
+              return [{x:0, y:0}, {x:0, y:1}, {x:0, y:-1}, {x:1, y:-1}];
+            case 2:
+              return [{x:0, y:0}, {x:1, y:0}, {x:-1, y:0}, {x:-1, y:-1}];
+            case 3:
+              return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:-1, y:1}];
+          }
+        },
+        function (dir) {
+          //Right L 
+          switch (dir) {
+            case 0:
+              return [{x:0, y:0}, {x:1, y:0}, {x:-1, y:0}, {x:-1, y:1}];
+            case 1:
+              return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:1, y:1}];
+            case 2:
+              return [{x:0, y:0}, {x:-1, y:0}, {x:1, y:0}, {x:1, y:-1}];
+            case 3:
+              return [{x:0, y:0}, {x:0, y:1}, {x:0, y:-1}, {x:-1, y:-1}];
+          }
+        },
+        function (dir) {
+          //Square
+          return [{x:0, y:0}, {x:1, y:0}, {x:0, y:1}, {x:1, y:1}];
+        }
+      ];
+      this.pieceIndex = rnd( 0, this.pieceList.length);
       this.rot = 0;
-      this.arr = this.getT();
+      this.arr = this.pieceList[this.pieceIndex](this.rot);
       this.cen = {x:5, y:0};
-    }
-    
-    getT() {
-      switch ( this.rot ) {
-        case 0:
-         return [{x: 0,y: 0},{x: -1,y: 0},{x:1, y:0}, {x:0, y:-1}];
-        case 1:
-          return [{x:0, y:0}, {x: 0, y:-1}, {x:0, y:1}, {x:-1,y:0}];
-        case 2:
-          return [{x:0, y:0}, {x:-1, y:0}, {x:1, y:0}, {x:0, y:1}];
-        case 3:
-          return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:1, y:0}];
-      }
     }
     
     cw(){
       this.rot -= 1;
       this.rot = this.rot < 0 ? 3 : this.rot;
-      this.arr = this.getT();
+      this.arr = this.pieceList[this.pieceIndex](this.rot);
     }
     
     ccw(){
       this.rot += 1;
       this.rot = this.rot > 3 ? 0 : this.rot;
-      this.arr = this.getT();
+      this.arr = this.pieceList[this.pieceIndex](this.rot);
     }
     
     moveL() {
@@ -124,7 +191,7 @@
   var loopVar = undefined;
 
   //To test new code manually
-  function startGame(dir) {
+  function startGame() {
     setUp();
     
     //Prevent multiple timers running
@@ -198,16 +265,16 @@
     dPieces = new droppedPieces();
   }
   
-  
+  function rnd(a, b){
+    return Math.floor((Math.random() * (b-a) + 1) + a);
+  }
   
 </script>
 
 
 
 <body>
-  <div id="game-grid">
-    <div class="block" style="grid-row: 20 / span 1; grid-column: 10 / span 1;"></div>
-  </div>
+  <div id="game-grid"></div>
   <div id="preview-grid"></div>
   <button onclick="startGame(0)">render</button>
   <button onclick="cPiece.ccw()">CCW</button>
@@ -219,6 +286,7 @@
 
 
 <style>
+
   body {
     margin: 0;
     padding: 0;
@@ -259,6 +327,7 @@
     border: 1vw solid white;
     padding: 0;
   }
+  
 </style>
 
 </html>
