@@ -254,19 +254,27 @@
 
       }
     }
+    
+    //Render preview-grid
+    document.getElementById("preview-grid").innerHTML = '';
+    for (b of nPiece.arr) {
+      document.getElementById("preview-grid").innerHTML +=
+      '<div class="block" style="grid-column: ' + String(b.x  + 2 + 1) +
+      ' / span 1; grid-row: ' + String(b.y  + 1 + 1) + ' / span 1;"></div>';
+    }
   }
 
   function setUp() {
     
-    nPiece = new Piece ();
     cPiece = new Piece ();
+    nPiece = new Piece ();
     
     //Init dropedPieces 2D Array
     dPieces = new droppedPieces();
   }
   
   function rnd(a, b){
-    return Math.floor((Math.random() * (b-a) + 1) + a);
+    return Math.floor((Math.random() * (b-a)) + a);
   }
   
 </script>
@@ -275,7 +283,10 @@
 
 <body>
   <div id="game-grid"></div>
-  <div id="preview-grid"></div>
+  <div id="preview-grid">
+    <div class="block" style="grid-column: 5 / span 1; grid-row: 5 / span 1;"></div>';
+    
+  </div>
   <button onclick="startGame(0)">render</button>
   <button onclick="cPiece.ccw()">CCW</button>
   <button onclick="cPiece.cw()">CW</button>
@@ -309,11 +320,11 @@
   }
 
   #preview-grid {
-
-    width: 16vw;
-    height: 16vw;
-    grid-template-columns: repeat(4, 4vw);
-    grid-template-rows: repeat(4,4vw);
+    display: grid;
+    width: 20vw;
+    height: 20vw;
+    grid-template-columns: repeat(5, 4vw);
+    grid-template-rows: repeat(5,4vw);
     grid-column-gap: 0;
     grid-row-gap: 0;
 
