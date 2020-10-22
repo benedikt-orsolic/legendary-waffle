@@ -209,6 +209,12 @@
     }
     
     dPieces.clearFullRow();
+    if ( topRowFull() ){
+      window.alert("End of game");
+      clearTimeout( loopVar );
+      loopVar = undefined;
+    }
+    
   }
 
   function lowestPartInContact() {
@@ -218,6 +224,11 @@
             return 1;
       }      
     }
+    return 0;
+  }
+  
+  function topRowFull(){
+    for( var i=0; i<COLUMNS; i++) if ( dPieces.arr[0][i] == 1) return 1;
     return 0;
   }
   
