@@ -20,3 +20,20 @@ h1 {
   * {
     font-family: Arial, Helvetica, sans-serif;
   }
+
+  nav {
+    a {
+      padding: 1rem;
+      text-decoration: none;
+      margin-top: 10px;
+      display: inline-block;
+      background-color: #8e8e8e;
+      color: #3d3d3d;
+      border-radius: 4px;
+
+      &:hover {
+        color: white;
+        background-color: #42545C;
+      }
+    }
+  }
