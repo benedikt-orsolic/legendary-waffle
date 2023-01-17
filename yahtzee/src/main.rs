@@ -1,4 +1,4 @@
-use std::io;
+use std::io::{self, Write};
 
 struct PlayerScoreBoard {
     name: String,
@@ -284,7 +284,6 @@ fn main() {
 }
 
 fn get_players() -> Vec<PlayerScoreBoard> {
-    println!("Enter number of players: ");
 
     let mut player_count_line = String::new();
     let mut player_count: u8 = 0;
@@ -296,6 +295,9 @@ fn get_players() -> Vec<PlayerScoreBoard> {
 
 
     while player_count < min_player_count || player_count > max_player_count {
+        
+        print!("Enter number of players: ");
+        io::stdout().flush().unwrap();
 
         match io::stdin().read_line(&mut player_count_line){
             Ok (_) => print!(""),
@@ -306,7 +308,6 @@ fn get_players() -> Vec<PlayerScoreBoard> {
             Ok(count) => player_count = count,
             Err(e) => println!("Something went wrong:  {e}"),
         }
-        println!("player count: {player_count}");
     }
 
 
@@ -314,7 +315,8 @@ fn get_players() -> Vec<PlayerScoreBoard> {
     while i < player_count.into() {
         
         let mut player_name = String::new();
-        println!("Enter name for player {}", i+1);
+        print!("Enter name for player {}: ", i+1);
+        io::stdout().flush().unwrap();
         match io::stdin().read_line(&mut player_name){
             Ok (_) => print!(""),
             Err(err) => println!("Something went wrong {err}"), 
