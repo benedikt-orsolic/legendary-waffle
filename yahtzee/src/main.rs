@@ -76,7 +76,7 @@ impl PlayerScoreBoard {
 }
 
 fn print_player_score_board(player_score_board: Vec<PlayerScoreBoard>) {
-
+    clear_screen();
 
     let w: usize = 15;
     let total_width: usize = (player_score_board.len() + 1) * (w+3);
@@ -270,6 +270,10 @@ fn create_player_score_board(player_name: String) -> PlayerScoreBoard {
     };
 
     return player_score_board;
+}
+
+fn clear_screen() {
+    print!("\x1B[2J\x1B[H")
 }
 
 fn main() {
