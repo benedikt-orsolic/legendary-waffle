@@ -75,7 +75,7 @@ impl PlayerScoreBoard {
     }
 }
 
-fn print_player_score_board(player_score_board: Vec<PlayerScoreBoard>) {
+fn print_player_score_board(player_score_board: &Vec<PlayerScoreBoard>) {
     clear_screen();
 
     let w: usize = 15;
@@ -88,8 +88,8 @@ fn print_player_score_board(player_score_board: Vec<PlayerScoreBoard>) {
         i += 1;
     }
     println!();
-    println!("{:-<total_width$}", "");
 
+    println!("{:-<total_width$}", "");
     i = 0;
     print!("{:>w$} |", "aces");
     while i < player_score_board.len() {
@@ -278,9 +278,9 @@ fn clear_screen() {
 
 fn main() {
     let player_names: Vec<PlayerScoreBoard> = get_players();
-    print_player_score_board(player_names);
+    print_player_score_board(&player_names);
 
-    game_loop();
+    game_loop(&player_names);
 }
 
 fn get_players() -> Vec<PlayerScoreBoard> {
@@ -334,7 +334,91 @@ fn get_players() -> Vec<PlayerScoreBoard> {
     return player_score_board;
 }
 
-fn game_loop() {
+fn game_loop(player_board: &Vec<PlayerScoreBoard>) {
 
     
+    let mut round: u8 = 0;
+    let max_rounds: u8 = 11;
+
+    while round < max_rounds {
+
+        play_round(&player_board);
+        round += 1;
+    }
 }
+
+fn play_round(player_board: &Vec<PlayerScoreBoard>) {
+    
+    let mut i: usize = 0;
+    while i < player_board.len() {
+        println!("{}", player_board[i].name);
+        let selected_dice: [u8; 5] = get_selected_dice(player[i].name);
+        select_category(&player_board[i], selected_dice);
+        i += 1;
+    }
+}
+
+fn get_selected_dice(name: String)-> [u8; 5] {
+
+    let mut i: usize = 0;
+    let dice: [u8; 5];
+    let selected_dice: [bool; 5] = [true, true, true, true, true];
+    while i < 3 {
+        let mut j: usize = 0;
+
+        while j < 5 {
+            if selected_dice[j] {
+                dice[i] = get_rng_dice();
+            }
+        }
+
+        print_dice(selected_dice);
+        select_dice_to_reroll();
+
+        if selected_dice.iter().position(|&x| x == true) == None {
+            break;
+        }
+
+        i += 1;
+    }
+
+    return dice;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
