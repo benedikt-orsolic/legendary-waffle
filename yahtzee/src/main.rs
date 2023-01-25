@@ -1,6 +1,5 @@
 use std::io::{self, Write};
-use rand_distr::{Distribution, Normal };
-use rand::thread_rng;
+use rand::Rng;
 
 struct PlayerScoreBoard {
     name: String,
@@ -354,17 +353,17 @@ fn play_round(player_board: &Vec<PlayerScoreBoard>) {
     let mut i: usize = 0;
     while i < player_board.len() {
         println!("{}", player_board[i].name);
-        let selected_dice: [u8; 5] = get_selected_dice(player_board[i].name);
+        let selected_dice: [u8; 5] = get_selected_dice(&player_board[i].name);
         select_category(&player_board[i], selected_dice);
         i += 1;
     }
 }
 
-fn get_selected_dice(name: String)-> [u8; 5] {
+fn get_selected_dice(name: &String)-> [u8; 5] {
 
     let mut i: usize = 0;
-    let dice: [u8; 5];
-    let selected_dice: [bool; 5] = [true, true, true, true, true];
+    let mut dice: [u8; 5] = [0, 0, 0, 0, 0];
+    let mut selected_dice: [bool; 5] = [true, true, true, true, true];
     while i < 3 {
         let mut j: usize = 0;
 
@@ -372,6 +371,7 @@ fn get_selected_dice(name: String)-> [u8; 5] {
             if selected_dice[j] {
                 dice[i] = get_rng_dice();
             }
+            j += 1;
         }
 
         print_dice(dice);
@@ -423,8 +423,8 @@ fn print_dice(dice: [u8; 5]){}
 fn select_dice_to_reroll() -> [bool; 5]{ [true, true, true, true, true]}
 
 
-fn get_rng_dice() -> void {
-    let mut rng = thread_rng();
-    let normal = Normal::new(1.0, 7.0);
-    println!("{}", normal);
+fn get_rng_dice() -> u8 {
+    let rng = rand::thread_rng().gen_range(1..=6);
+    println!("{}", rng);
+    return 6;
 }
