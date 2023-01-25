@@ -364,23 +364,23 @@ fn get_selected_dice(name: &String)-> [u8; 5] {
     let mut i: usize = 0;
     let mut dice: [u8; 5] = [0, 0, 0, 0, 0];
     let mut selected_dice: [bool; 5] = [true, true, true, true, true];
+
     while i < 3 {
         let mut j: usize = 0;
 
         while j < 5 {
             if selected_dice[j] {
-                dice[i] = get_rng_dice();
+                dice[j] = get_rng_dice();
             }
             j += 1;
         }
-
-        print_dice(dice);
-        selected_dice = select_dice_to_reroll();
 
         if selected_dice.iter().position(|&x| x == true) == None {
             break;
         }
 
+        print_dice(dice);
+        selected_dice = select_dice_to_reroll();
         i += 1;
     }
 
@@ -417,14 +417,58 @@ fn get_selected_dice(name: &String)-> [u8; 5] {
 
 
 
-fn select_category(player: &PlayerScoreBoard, dice: [u8; 5]) {}
-fn print_dice(dice: [u8; 5]){}
+fn select_category(player: &PlayerScoreBoard, dice: [u8; 5]) {
+    
+}
+fn print_dice(dice: [u8; 5]){
+    println!();
+    let mut i: usize = 0;
+    while i < 5 {
+        print!("{}    ", dice[i]);
+        i += 1;
+    }
+    println!();
+    println!("A    B    C    D    E");
+    println!();
+}
 
-fn select_dice_to_reroll() -> [bool; 5]{ [true, true, true, true, true]}
+fn select_dice_to_reroll() -> [bool; 5]{ 
+    
+    let mut input = String::new();
+    let mut selected_dice: [bool; 5] = [false, false, false, false, false];
+
+    println!("Select dice to rerol");
+
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Faild to read dice selection");
+
+    if input.contains("A") || input.contains("a") {
+        selected_dice[0] = true;
+    }
+
+    if input.contains("B") || input.contains("b") {
+        selected_dice[1] = true;
+    }
+
+    if input.contains("C") || input.contains("c") {
+        selected_dice[2] = true;
+    }
+
+
+    if input.contains("D") || input.contains("d") {
+        selected_dice[3] = true;
+    }
+
+    if input.contains("E") || input.contains("e") {
+        selected_dice[1] = true;
+    }
+
+    return selected_dice;
+}
 
 
 fn get_rng_dice() -> u8 {
     let rng = rand::thread_rng().gen_range(1..=6);
-    println!("{}", rng);
-    return 6;
+    return rng;
 }
