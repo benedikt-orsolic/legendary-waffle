@@ -381,7 +381,9 @@ fn get_selected_dice()-> [u8; 5] {
         }
 
         print_dice(dice);
-        selected_dice = select_dice_to_reroll();
+        if i < 2 {
+            selected_dice = select_dice_to_reroll();
+        }
         i += 1;
     }
 
