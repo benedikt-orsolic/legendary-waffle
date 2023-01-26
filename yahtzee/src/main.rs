@@ -355,7 +355,7 @@ fn play_round(player_board: &mut Vec<PlayerScoreBoard>) {
         print_player_score_board(&player_board);
         println!("{}", player_board[i].name);
         let selected_dice: [u8; 5] = get_selected_dice();
-        select_category(&mut player_board[i], selected_dice);
+        while !select_category(&mut player_board[i], selected_dice) {};
         i += 1;
     }
 }
@@ -419,8 +419,7 @@ fn get_selected_dice()-> [u8; 5] {
 
 
 
-
-fn select_category(player: &mut PlayerScoreBoard, dice: [u8; 5]) {
+fn select_category(player: &mut PlayerScoreBoard, dice: [u8; 5]) -> bool {
     println!("Select category");
 
     let mut input = String::new();
@@ -429,18 +428,56 @@ fn select_category(player: &mut PlayerScoreBoard, dice: [u8; 5]) {
         .read_line(&mut input)
         .expect("Faild to get category");
 
-    if input.contains("A") || input.contains("a") {
-        player.aces = 0;
-        let mut i: usize = 0;
-        while i < 5 {
-            if dice[i] == 1 {
-                player.aces += 1;
-            }
-            i += 1;
-        }
+    if input.contains("A") {
+        if player.aces >= 0 { return false; }
+        player.aces = get_dice_sum_for_val(1, dice);
+        return true;
     }
+
+    if input.contains("B") { 
+        if !player.twos < 0 { return false; }
+        player.twos = get_dice_sum_for_val(2, dice);
+        return true;
+    }
+
+    if input.contains("C") {
+        if !player.threes < 0 { return false; }
+        player.threes = get_dice_sum_for_val(3, dice);
+        return true;
+    }
+
+    if input.contains("D") {
+        if !player.fours < 0 { return false; }
+        player.fours = get_dice_sum_for_val(4, dice);
+        return true;
+    }
+
+    if input.contains("E") {
+        if !player.fives < 0 { return false; }
+        player.fives = get_dice_sum_for_val(5, dice);
+        return true;
+    }
+        
+    if input.contains("F") {
+        if !player.sixes < 0 { return false; }
+        player.sixes = get_dice_sum_for_val(6, dice);
+        return true;
+    }
+
+    return false;       
     
 }
+
+fn get_dice_sum_for_val(value: u8, dice: [u8; 5]) -> i32 {
+    let mut sum: i32 = 0;
+    let mut i = 0;
+    while i < 5 {
+        if dice[i] == value { sum += 1; }
+        i += 1;
+    }
+    return sum;
+}
+
 fn print_dice(dice: [u8; 5]){
     println!();
     let mut i: usize = 0;
@@ -454,9 +491,9 @@ fn print_dice(dice: [u8; 5]){
 }
 
 fn select_dice_to_reroll() -> [bool; 5]{ 
-    
     let mut input = String::new();
-    let mut selected_dice: [bool; 5] = [false, false, false, false, false];
+    let mut selected_dice: [bool; 5] = 
+        [false, false, false, false, false];
 
     println!("Select dice to rerol");
 
@@ -464,26 +501,11 @@ fn select_dice_to_reroll() -> [bool; 5]{
         .read_line(&mut input)
         .expect("Faild to read dice selection");
 
-    if input.contains("A") || input.contains("a") {
-        selected_dice[0] = true;
-    }
-
-    if input.contains("B") || input.contains("b") {
-        selected_dice[1] = true;
-    }
-
-    if input.contains("C") || input.contains("c") {
-        selected_dice[2] = true;
-    }
-
-
-    if input.contains("D") || input.contains("d") {
-        selected_dice[3] = true;
-    }
-
-    if input.contains("E") || input.contains("e") {
-        selected_dice[1] = true;
-    }
+    if input.contains("A") { selected_dice[0] = true; }
+    if input.contains("B") { selected_dice[1] = true; }
+    if input.contains("C") { selected_dice[2] = true; }
+    if input.contains("D") { selected_dice[3] = true; }
+    if input.contains("E") { selected_dice[4] = true; }
 
     return selected_dice;
 }
