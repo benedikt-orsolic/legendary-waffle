@@ -71,5 +71,29 @@ impl PlayerScoreBoard {
     pub fn total_score(&self) -> i32{
         self.upper_section_score() + self.lower_section_score()
     }
+
+
+    pub fn new(player_name: String) -> PlayerScoreBoard {
+        let player_score_board: PlayerScoreBoard = PlayerScoreBoard {
+            name : player_name,
+
+            aces : -1,
+            twos : -1,
+            threes : -1,
+            fours : -1,
+            fives : -1,
+            sixes : -1,
+
+            three_of_a_kind : -1,
+            four_of_a_kind : -1,
+            full_house : -1,
+            small_straight : -1,
+            large_straight : -1,
+            yahtzee : -1,
+            chance : -1,
+        };
+
+        return player_score_board;
+    }
 }
 

@@ -177,28 +177,6 @@ fn print_value_segment(val: i32, width: usize) {
         }
 }
 
-fn create_player_score_board(player_name: String) -> PlayerScoreBoard {
-    let player_score_board: PlayerScoreBoard = PlayerScoreBoard {
-        name : player_name,
-
-        aces : -1,
-        twos : -1,
-        threes : -1,
-        fours : -1,
-        fives : -1,
-        sixes : -1,
-
-        three_of_a_kind : -1,
-        four_of_a_kind : -1,
-        full_house : -1,
-        small_straight : -1,
-        large_straight : -1,
-        yahtzee : -1,
-        chance : -1,
-    };
-
-    return player_score_board;
-}
 
 fn clear_screen() {
     print!("\x1B[2J\x1B[H")
@@ -253,7 +231,7 @@ fn get_players() -> Vec<PlayerScoreBoard> {
         // Remove trailing new line
         player_name.pop();
 
-        player_score_board.push(create_player_score_board(player_name));
+        player_score_board.push(PlayerScoreBoard::new(player_name));
 
 
         i += 1;
