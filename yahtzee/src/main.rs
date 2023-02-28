@@ -3,180 +3,6 @@ use rand::Rng;
 mod player_score_board;
 use player_score_board::PlayerScoreBoard;
 
-fn print_player_score_board(player_score_board: &Vec<PlayerScoreBoard>) {
-    clear_screen();
-
-    let w: usize = 15;
-    let total_width: usize = (player_score_board.len() + 1) * (w+3) + 1;
-
-    let mut i: usize = 0;
-    print!("   {:>w$} |", "name");
-    while i < player_score_board.len() {
-        print!("{:>w$} | ", player_score_board[i].name);
-        i += 1;
-    }
-    println!();
-
-    println!("{:-<total_width$}", "");
-    i = 0;
-    print!(" A {:>w$} |", "aces");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].aces;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-    
-    i = 0;
-    print!(" B {:>w$} |", "twos");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].twos;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-
-    i = 0;
-    print!(" C {:>w$} |", "threes");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].threes;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-
-    i = 0;
-    print!(" D {:>w$} |", "fours");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].fours;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-
-    i = 0;
-    print!(" E {:>w$} |", "fives");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].fives;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-
-    i = 0;
-    print!(" F {:>w$} |", "sixes");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].sixes;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-
-    i = 0;
-    print!("   {:>w$} |", "Total upper");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].upper_section_score();
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:=<total_width$}", "");
-
-    i = 0;
-    print!(" G {:>w$} |", "Three of a kind");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].three_of_a_kind;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-
-    i = 0;
-    print!(" H {:>w$} |", "Four of a kind");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].four_of_a_kind;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-
-    i = 0;
-    print!(" J {:>w$} |", "Small straight");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].small_straight;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-
-    i = 0;
-    print!(" K {:>w$} |", "Large straight");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].large_straight;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-
-    i = 0;
-    print!(" L {:>w$} |", "Yahtzee");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].yahtzee;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-
-    i = 0;
-    print!(" M {:>w$} |", "Chance");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].chance;
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:-<total_width$}", "");
-    
-    i = 0;
-    print!("   {:>w$} |", "Lower section");
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].lower_section_score();
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:=<total_width$}", "");
-
-    print!("   {:>w$} |", "Total");
-    i = 0;
-    while i < player_score_board.len() {
-        let val: i32 = player_score_board[i].total_score();
-        print_value_segment(val, w);
-        i += 1;
-    }
-    println!();
-    println!("{:=<total_width$}", "");
-}
-
-fn print_value_segment(val: i32, width: usize) {
-        if val < 0 {
-            print!("{:>width$} | ", "/");
-        }else{
-            print!("{:>width$} | ", val);
-        }
-}
-
 
 fn clear_screen() {
     print!("\x1B[2J\x1B[H")
@@ -184,7 +10,8 @@ fn clear_screen() {
 
 fn main() {
     let mut player_names: Vec<PlayerScoreBoard> = get_players();
-    print_player_score_board(&player_names);
+    clear_screen();
+    PlayerScoreBoard::print_player_score_board(&player_names);
 
     game_loop(&mut player_names);
 }
@@ -257,7 +84,7 @@ fn play_round(player_board: &mut Vec<PlayerScoreBoard>) {
     let mut i: usize = 0;
     while i < player_board.len() {
         clear_screen();
-        print_player_score_board(&player_board);
+        PlayerScoreBoard::print_player_score_board(player_board);
         println!("{}", player_board[i].name);
         let selected_dice: [u8; 5] = get_selected_dice();
         while !select_category(&mut player_board[i], selected_dice) {};
