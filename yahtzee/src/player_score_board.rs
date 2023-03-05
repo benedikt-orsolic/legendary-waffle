@@ -1,6 +1,6 @@
 pub struct PlayerScoreBoard {
     pub name: String,
-    
+
     // Upper section
     pub aces: i32,
     pub twos: i32,
@@ -68,13 +68,13 @@ impl PlayerScoreBoard {
         return total;
     }
 
-    pub fn total_score(&self) -> i32{
+    pub fn total_score(&self) -> i32 {
         self.upper_section_score() + self.lower_section_score()
     }
 
     pub fn print_player_score_board(player_score_board: &Vec<Self>) {
         let w: usize = 15;
-        let total_width: usize = (player_score_board.len() + 1) * (w+3) + 1;
+        let total_width: usize = (player_score_board.len() + 1) * (w + 3) + 1;
 
         let mut i: usize = 0;
         print!("   {:>w$} |", "name");
@@ -94,7 +94,7 @@ impl PlayerScoreBoard {
         }
         println!();
         println!("{:-<total_width$}", "");
-        
+
         i = 0;
         print!(" B {:>w$} |", "twos");
         while i < player_score_board.len() {
@@ -214,7 +214,7 @@ impl PlayerScoreBoard {
         }
         println!();
         println!("{:-<total_width$}", "");
-        
+
         i = 0;
         print!("   {:>w$} |", "Lower section");
         while i < player_score_board.len() {
@@ -239,34 +239,31 @@ impl PlayerScoreBoard {
     fn print_value_segment(val: i32, width: usize) {
         if val < 0 {
             print!("{:>width$} | ", "/");
-        }else{
+        } else {
             print!("{:>width$} | ", val);
         }
     }
 
     pub fn new(player_name: String) -> PlayerScoreBoard {
         let player_score_board: PlayerScoreBoard = PlayerScoreBoard {
-            name : player_name,
+            name: player_name,
 
-            aces : -1,
-            twos : -1,
-            threes : -1,
-            fours : -1,
-            fives : -1,
-            sixes : -1,
+            aces: -1,
+            twos: -1,
+            threes: -1,
+            fours: -1,
+            fives: -1,
+            sixes: -1,
 
-            three_of_a_kind : -1,
-            four_of_a_kind : -1,
-            full_house : -1,
-            small_straight : -1,
-            large_straight : -1,
-            yahtzee : -1,
-            chance : -1,
+            three_of_a_kind: -1,
+            four_of_a_kind: -1,
+            full_house: -1,
+            small_straight: -1,
+            large_straight: -1,
+            yahtzee: -1,
+            chance: -1,
         };
 
         return player_score_board;
     }
-
-
 }
-
