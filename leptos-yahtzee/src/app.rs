@@ -24,13 +24,13 @@ pub fn App(cx: Scope) -> impl IntoView {
             <main>
                 <Routes>
                     <Route path="" view=|cx| view! { cx, <HomePage/> }/>
+                    <Route path="/yahtzee" view=|cx| view! { cx, <YahtzeeBoard/> }/>
                 </Routes>
             </main>
         </Router>
     }
 }
 
-/// Renders the home page of your application.
 #[component]
 fn HomePage(cx: Scope) -> impl IntoView {
     // Creates a reactive value to update the button
@@ -40,25 +40,35 @@ fn HomePage(cx: Scope) -> impl IntoView {
     view! { cx,
         <h1>"Welcome to Leptos!"</h1>
         <button on:click=on_click>"Click Me: " {count}</button>
-        <YahtzeeBoard />
+        <a href="/yahtzee">{"Yahtzee"}</a>
     }
 }
 
 #[component]
 fn YahtzeeBoard(cx: Scope) -> impl IntoView {
     let initBoard: Vec<PlayerScoreBoard> = Vec::new();
-    let mut currentPlayer = 0;
     let (board, set_board) = create_signal(cx, initBoard);
+
     set_board.update(|b| b.push(PlayerScoreBoard::new("Jhon".into())));
     set_board.update(|b| b.push(PlayerScoreBoard::new("Wayn".into())));
     set_board.update(|b| b.push(PlayerScoreBoard::new("Bain".into())));
-    set_board.update(|b| b.push(PlayerScoreBoard::new("Main".into())));
+    // set_board.update(|b| b.push(PlayerScoreBoard::new("Main".into())));
+
+    let initPlayer: usize = 0;
+    let (curr_player, set_curr_player) = create_signal(cx, initPlayer);
+
+    let initDice: [u8; 5] = [1, 2, 3, 4, 5];
+    let (dice, set_dice) = create_signal(cx, initDice);
+
+    let initRoll: u8 = 0;
+    let (roll, set_roll) = create_signal(cx, initRoll);
 
     provide_context(cx, board);
+    provide_context(cx, curr_player);
 
     view! { cx,
         <table style="border: 5px; border-style: solid; margin-left: 10vw; margin-right: 10vw; margin-top: 10vh; margin-bottom: 10vh">
-             <NamesRow />
+            <NamesRow />
             <tbody>
                 <ScoreRow row_name="Acees" score_fn=Box::new(|p: PlayerScoreBoard| p.aces.clone()) />
                 <ScoreRow row_name="Twos" score_fn=Box::new(|p: PlayerScoreBoard| p.twos.clone()) />
@@ -83,6 +93,18 @@ fn YahtzeeBoard(cx: Scope) -> impl IntoView {
                 <hr />
             </tbody>
 
+            <div>
+                <p>{"Current roll"}</p><strong>{roll.get().to_string()}</strong>
+                <p>{dice()[0]}</p>
+                <p>{dice.get()[1]}</p>
+                <p>{dice.get()[2]}</p>
+                <p>{dice.get()[3]}</p>
+                <p>{dice.get()[4]}</p>
+                <button on:click = move |_| 
+                    set_roll.update(|r| *r += 1)
+                >{"Reroll"}</button>
+            </div>
+
         </table>
     }
 }
@@ -90,6 +112,7 @@ fn YahtzeeBoard(cx: Scope) -> impl IntoView {
 #[component]
 fn NamesRow(cx: Scope) -> impl IntoView {
     let board = use_context::<ReadSignal<Vec<PlayerScoreBoard>>>(cx).expect("PlayerScoreBoard Vec");
+    let curr_player = use_context::<ReadSignal<usize>>(cx).expect("Current player");
 
     view! { cx,
         <thead>
@@ -98,8 +121,16 @@ fn NamesRow(cx: Scope) -> impl IntoView {
                 each=board
                 key=|player| player.name.clone()
                 view=move |cx, player |  {
+
+                    let mut back_ground = "white";
+                    if player.name == board.get()[curr_player.get()].name {
+                        back_ground = "green";
+                    }
+
+                    let style:String = String::new() + "background: " + back_ground;
+
                     view! {cx,
-                        <th>{player.name.clone()}</th>
+                        <th style=style>{player.name.clone()}</th>
                     }
                 }
             />
@@ -108,8 +139,13 @@ fn NamesRow(cx: Scope) -> impl IntoView {
 }
 
 #[component]
-fn ScoreRow(cx: Scope, row_name: &'static str, score_fn: Box<dyn Fn(PlayerScoreBoard) -> i32>) -> impl IntoView {
+fn ScoreRow(
+    cx: Scope,
+    row_name: &'static str,
+    score_fn: Box<dyn Fn(PlayerScoreBoard) -> i32>,
+) -> impl IntoView {
     let board = use_context::<ReadSignal<Vec<PlayerScoreBoard>>>(cx).expect("PlayerScoreBoard Vec");
+    let curr_player = use_context::<ReadSignal<usize>>(cx).expect("Current player");
 
     view! { cx,
         <tr>
@@ -118,17 +154,22 @@ fn ScoreRow(cx: Scope, row_name: &'static str, score_fn: Box<dyn Fn(PlayerScoreB
                 each=board
                 key=|player| player.name.clone()
                 view=move |cx, player |  {
+                    let mut button_disable = true;
+                    if player.name == board.get()[curr_player.get()].name {
+                        button_disable = false;
+                    }
 
                     let score = score_fn(player);
                     let mut btnState = "/".to_string();
                     if score != -1 {
                         btnState = score.to_string();
                     }
+                    
 
 
                     view! {cx,
                             <td>
-                                <button>
+                                <button disabled=button_disable>
                                     {btnState}
                                 </button>
                             </td>
@@ -138,4 +179,3 @@ fn ScoreRow(cx: Scope, row_name: &'static str, score_fn: Box<dyn Fn(PlayerScoreB
         </tr>
     }
 }
-
