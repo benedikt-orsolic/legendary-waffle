@@ -1,0 +1,355 @@
+<!DOCTYPE HTML>                                                                                       
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snake</title>
+
+</head>
+
+
+
+<script>
+  var ROWS = 25;
+  var COLUMNS = 10;
+  
+  
+  
+  class Piece{
+    //add track of which piece 
+    //? function pointer
+    
+    //this.arr = undefined; // Stores arr of coordinates
+    //this.rot = undefined; // Which way its pointing
+    //this.cen = undefined; //What is center of rotation
+    
+    constructor(){
+      
+      this.pieceList = [
+        function (dir) {
+          //T
+          switch ( dir ) {
+              case 0:
+                return [{x: 0,y: 0},{x: -1,y: 0},{x:1, y:0}, {x:0, y:-1}];
+              case 1:
+                return [{x:0, y:0}, {x: 0, y:-1}, {x:0, y:1}, {x:-1,y:0}];
+              case 2:
+                return [{x:0, y:0}, {x:-1, y:0}, {x:1, y:0}, {x:0, y:1}];
+              case 3:
+                return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:1, y:0}];
+            }
+        }, 
+        function (dir) {
+          //I
+          switch( dir ){
+            case 0:
+            case 2:
+              return [{x:0, y:0}, {x:0, y:1}, {x:0, y:2}, {x:0, y:3}];
+            case 1:
+            case 3:
+              return [{x:0, y:0}, {x:1, y:0}, {x:2, y:0}, {x:3, y:0}];
+            }
+            return [{x:0, y:0}]
+        },
+        function (dir) {
+          //Left z
+          switch ( dir ){
+            case 0:
+            case 2:
+              return [{x:0, y:0}, {x:-1, y:0}, {x:0, y:1}, {x:1, y:1}];
+            case 1:
+            case 3:
+              return [{x:0, y:0}, {x:0, y:-1}, {x:-1, y:0}, {x:-1, y:1}];
+          }
+        },
+        function (dir) {
+          //Right z
+          switch ( dir ){
+            case 0:
+            case 2:
+              return [{x:0, y:0}, {x:1, y:0}, {x:0, y:1}, {x:-1, y:1}];
+            case 1:
+            case 3:
+              return [{x:0, y:0}, {x:0, y:-1}, {x:1, y:0}, {x:1, y:1}];
+          }
+        },
+        function (dir) {
+          //Left L 
+          switch ( dir ){
+            case 0:
+              return [{x:0, y:0}, {x:-1, y:0}, {x:1, y:0}, {x:1, y:1}];
+            case 1:
+              return [{x:0, y:0}, {x:0, y:1}, {x:0, y:-1}, {x:1, y:-1}];
+            case 2:
+              return [{x:0, y:0}, {x:1, y:0}, {x:-1, y:0}, {x:-1, y:-1}];
+            case 3:
+              return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:-1, y:1}];
+          }
+        },
+        function (dir) {
+          //Right L 
+          switch (dir) {
+            case 0:
+              return [{x:0, y:0}, {x:1, y:0}, {x:-1, y:0}, {x:-1, y:1}];
+            case 1:
+              return [{x:0, y:0}, {x:0, y:-1}, {x:0, y:1}, {x:1, y:1}];
+            case 2:
+              return [{x:0, y:0}, {x:-1, y:0}, {x:1, y:0}, {x:1, y:-1}];
+            case 3:
+              return [{x:0, y:0}, {x:0, y:1}, {x:0, y:-1}, {x:-1, y:-1}];
+          }
+        },
+        function (dir) {
+          //Square
+          return [{x:0, y:0}, {x:1, y:0}, {x:0, y:1}, {x:1, y:1}];
+        }
+      ];
+      this.pieceIndex = rnd( 0, this.pieceList.length);
+      this.rot = 0;
+      this.arr = this.pieceList[this.pieceIndex](this.rot);
+      this.cen = {x:5, y:0};
+    }
+    
+    cw(){
+      this.rot -= 1;
+      this.rot = this.rot < 0 ? 3 : this.rot;
+      this.arr = this.pieceList[this.pieceIndex](this.rot);
+    }
+    
+    ccw(){
+      this.rot += 1;
+      this.rot = this.rot > 3 ? 0 : this.rot;
+      this.arr = this.pieceList[this.pieceIndex](this.rot);
+    }
+    
+    moveL() {
+      for( b of this.arr ){
+        if( b.x + this.cen.x <= 0) return;
+      }
+      this.cen.x--;
+    }
+    
+    moveR() {
+      for ( b of this.arr ){
+        if ( b.x + this.cen.x >= 9 ) return;
+      }
+      this.cen.x++;
+    }
+    
+  }
+  
+  class droppedPieces {
+    
+    //this.arr[row][column]
+    constructor() {
+      this.arr = new Array( 25 );
+      for (var i=0; i<ROWS; i++) {
+        this.arr[i] = new Array( 10 ).map(function () { return 0; });
+      }
+      this.arr[24][9] = 1;
+    }
+    
+    clearFullRow(){
+      
+      for(var i=0; i<ROWS; i++ ){
+      
+        var isFull = 1;
+        
+        //Check if row is full
+        for( var j=0; j<COLUMNS; j++ ){
+          if ( this.arr[i][j] != 1 ){
+            
+            isFull = 0;
+            break;
+          }
+        }
+        
+        if( isFull ) {
+          
+          //Clear row
+          for ( var j=0; j<COLUMNS; j++ ) this.arr[i][j] = 0;
+          
+          //Move cleared row to the top
+          this.arr.unshift(this.arr.splice(i, 1));
+          
+          //So we stay at same index 
+          //if droped row is also full
+          //TODO test it!
+          i--;
+        }
+        
+      }
+    }
+  }
+  
+  
+  var dPieces = undefined;  //droppedPieces
+  
+  var cPiece = undefined;  //Current
+  var nPiece = undefined;  //Next
+  
+  //Tracks if game is running
+  var loopVar = undefined;
+
+  //To test new code manually
+  function startGame() {
+    setUp();
+    
+    //Prevent multiple timers running
+    loopVar = loopVar == undefined ? setInterval(gameLoop, 200) : loopVar;
+  }
+
+  async function gameLoop() {
+
+    cPiece.cen.y += 1;
+    render();
+    
+    if( lowestPartInContact() ) {
+      addCurrentToDropedPieces();
+      setNewCurrentPiece();
+    }
+    
+    dPieces.clearFullRow();
+    if ( topRowFull() ){
+      window.alert("End of game");
+      clearTimeout( loopVar );
+      loopVar = undefined;
+    }
+    
+  }
+
+  function lowestPartInContact() {
+    for (b of cPiece.arr) {
+      if ( b.y + cPiece.cen.y >= ROWS - 1 ||
+          dPieces.arr[b.y + cPiece.cen.y + 1][b.x + cPiece.cen.x] == 1) {
+            return 1;
+      }      
+    }
+    return 0;
+  }
+  
+  function topRowFull(){
+    for( var i=0; i<COLUMNS; i++) if ( dPieces.arr[0][i] == 1) return 1;
+    return 0;
+  }
+  
+  function setNewCurrentPiece() {
+    cPiece = nPiece;
+    nPiece = new Piece();
+  }
+  
+  function addCurrentToDropedPieces() {
+    for (b of cPiece.arr) {
+      dPieces.arr[b.y + cPiece.cen.y][b.x + cPiece.cen.x] = 1;
+    }
+  }
+  
+  function render() {
+    
+    //Clear screen
+    document.getElementById("game-grid").innerHTML = "";
+    
+    //Print current piece
+    for (b of cPiece.arr) {
+      document.getElementById("game-grid").innerHTML +=
+      '<div class="block" style="grid-column: ' + String(cPiece.cen.x + b.x + 1) +
+      ' / span 1; grid-row: ' + String(cPiece.cen.y + b.y + 1) + ' / span 1;"></div>';
+    }
+    
+    //Print droped pieces
+    for (var i=0; i < ROWS; i++) {
+      for (var j=0; j < COLUMNS; j++) {
+        if( dPieces.arr[i][j] == 1 )
+          document.getElementById("game-grid").innerHTML +=
+            '<div class="block" style="grid-column: ' + String(j + 1) +
+            ' / span 1; grid-row: ' + String(i + 1) + ' / span 1;"></div>';
+
+      }
+    }
+    
+    //Render preview-grid
+    document.getElementById("preview-grid").innerHTML = '';
+    for (b of nPiece.arr) {
+      document.getElementById("preview-grid").innerHTML +=
+      '<div class="block" style="grid-column: ' + String(b.x  + 2 + 1) +
+      ' / span 1; grid-row: ' + String(b.y  + 1 + 1) + ' / span 1;"></div>';
+    }
+  }
+
+  function setUp() {
+    
+    cPiece = new Piece ();
+    nPiece = new Piece ();
+    
+    //Init dropedPieces 2D Array
+    dPieces = new droppedPieces();
+  }
+  
+  function rnd(a, b){
+    return Math.floor((Math.random() * (b-a)) + a);
+  }
+  
+</script>
+
+
+
+<body>
+  <div id="game-grid"></div>
+  <div id="preview-grid">
+    <div class="block" style="grid-column: 5 / span 1; grid-row: 5 / span 1;"></div>';
+    
+  </div>
+  <button onclick="startGame(0)">render</button>
+  <button onclick="cPiece.ccw()">CCW</button>
+  <button onclick="cPiece.cw()">CW</button>
+  <button onclick="cPiece.moveL()">Left</button>
+  <button onclick="cPiece.moveR()">Right</button>
+</body>
+
+
+
+<style>
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  #game-grid {
+    display: grid;
+    height: 100vw;
+    width: 40vw;
+
+    grid-template-columns: repeat(10, 4vw);
+    grid-template-rows: repeat(25, 4vw);
+    grid-column-gap: 0;
+    grid-row-gap: 0;
+
+    background-color: #505050;
+
+    overflow: hidden;
+
+  }
+
+  #preview-grid {
+    display: grid;
+    width: 20vw;
+    height: 20vw;
+    grid-template-columns: repeat(5, 4vw);
+    grid-template-rows: repeat(5,4vw);
+    grid-column-gap: 0;
+    grid-row-gap: 0;
+
+    background-color: blue;
+  }
+
+  .block {
+    background-color: blue;
+    height: 2vw;
+    width: 2vw;
+    border: 1vw solid white;
+    padding: 0;
+  }
+  
+</style>
+
+</html>
