@@ -1,9 +1,8 @@
 import React from "react";
-import { TResult } from "../../../../services/ImgService";
+import ImgService, { TResult } from "../../../../../../services/ImgService";
 
 export default function Ovarlay(props: { imgHit: TResult["hits"][0] }) {
   const [isExpanded, setIsExpanded] = React.useState(false);
-  console.log(isExpanded);
 
   return (
     <div className="img-grid__article__focus-overlay">
@@ -27,7 +26,12 @@ export default function Ovarlay(props: { imgHit: TResult["hits"][0] }) {
         </svg>
       </button>
 
-      <button className="img-gird__article__heart">
+      <button
+        className="img-gird__article__heart"
+        onClick={() => {
+          ImgService.toggleFavImgId(props.imgHit.id);
+        }}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill={props.imgHit.id % 2 == 0 ? "none" : "red"}

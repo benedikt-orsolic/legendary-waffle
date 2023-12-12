@@ -1,5 +1,5 @@
 import { TResult } from "../../services/ImgService";
-import Img from './components/Img';
+import Img from './components/img/Img';
 
 export default function ImgGrid(props: { pageData: TResult }) {
   return (

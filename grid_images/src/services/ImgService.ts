@@ -47,6 +47,7 @@ export default class ImgService {
   }) {
     const params = new URLSearchParams();
     params.set("q", searchParams.q);
+    // params.set("id", "729509,729509");
     const url = BASE_URL + params.toString();
     try {
       const rawResponse = await fetch(url);

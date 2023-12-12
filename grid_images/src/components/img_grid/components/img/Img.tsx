@@ -1,11 +1,11 @@
-import { TResult } from "../../../services/ImgService";
-import Ovarlay from './components/Ovarlay';
+import { TResult } from "../../../../services/ImgService";
+import Ovarlay from './components/overlay/Ovarlay';
 
 export default function Img(props: { imgHit: TResult["hits"][0] }) {
   const webFormatUrlSegments = props.imgHit.webformatURL.split("_640");
   const baseWebFormatUrl = webFormatUrlSegments[0];
   const webFormatExtention = webFormatUrlSegments[1].split(".")[1];
-  console.log(webFormatExtention);
+  console.log(props.imgHit.id);
   const webFormatSizeRation =
     props.imgHit.webformatWidth / props.imgHit.webformatHeight;
 
