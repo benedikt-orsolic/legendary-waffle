@@ -1,8 +1,10 @@
 import React from "react";
 import ImgService, { TResult } from "../../../../../../services/ImgService";
+import { useFavoritesImgs } from "../../../../../../state/FavoriteImgsState";
 
 export default function Ovarlay(props: { imgHit: TResult["hits"][0] }) {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const { favorites, toggleFavId } = useFavoritesImgs();
 
   return (
     <div className="img-grid__article__focus-overlay">
@@ -29,12 +31,13 @@ export default function Ovarlay(props: { imgHit: TResult["hits"][0] }) {
       <button
         className="img-gird__article__heart"
         onClick={() => {
-          ImgService.toggleFavImgId(props.imgHit.id);
+          // ImgService.toggleFavImgId(props.imgHit.id);
+          toggleFavId(props.imgHit.id);
         }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          fill={props.imgHit.id % 2 == 0 ? "none" : "red"}
+          fill={favorites.includes(props.imgHit.id) ? "red" : "none"}
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
