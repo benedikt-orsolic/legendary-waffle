@@ -1,5 +1,5 @@
 import React from "react";
-import ImgService, { TResult } from "../../../../../../services/ImgService";
+import { TResult } from "../../../../../../services/ImgService";
 import { useFavoritesImgs } from "../../../../../../state/FavoriteImgsState";
 
 export default function Ovarlay(props: { imgHit: TResult["hits"][0] }) {
@@ -37,7 +37,7 @@ export default function Ovarlay(props: { imgHit: TResult["hits"][0] }) {
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          fill={favorites.includes(props.imgHit.id) ? "red" : "none"}
+          fill={favorites.includes(props.imgHit.id) ? "red" : "gray"}
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"

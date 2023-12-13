@@ -23,8 +23,8 @@ export function FavoritesImagesCtxProvider(props: {
             setFavorites([...favorites, toggleFavId]);
             return;
           }
-
-          setFavorites([...favorites.splice(favIdIdx, 1)]);
+          favorites.splice(favIdIdx, 1);
+          setFavorites([...favorites]);
         },
       }}
     >

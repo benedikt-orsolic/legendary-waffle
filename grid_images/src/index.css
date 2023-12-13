@@ -29,14 +29,19 @@ code {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
+  /* overflow: hidden; */
+}
+
+.img-grid__article__picture__wrapper {
+  grid-row: 1;
+  grid-column: 1;
+  /* width: 100%; */
+  /* height: 100%; */
   align-content: center;
   justify-content: center;
   overflow: hidden;
 }
-
 .img-grid__article__picture {
-  grid-row: 1;
-  grid-column: 1;
   width: 100%;
   height: 100%;
 }
@@ -70,12 +75,12 @@ code {
     ". heart ."
     ". . .";
 
-    align-items: center;
-    justify-items: center;
+  align-items: center;
+  justify-items: center;
 }
 
-.img-grid__article:hover :last-child {
-  display: inline-grid;
+.img-grid__article:hover .img-grid__article__focus-overlay{
+  display: grid;
 }
 
 .img-gird__article__heart {
@@ -86,7 +91,7 @@ code {
   border: none;
 }
 
-.img-gird__article__heart:hover{
+.img-gird__article__heart:hover {
   height: 3.5rem;
   width: 3.5rem;
 }
@@ -103,4 +108,3 @@ code {
   height: 3.5rem;
   width: 3.5rem;
 }
-
