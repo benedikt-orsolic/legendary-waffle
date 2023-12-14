@@ -15,23 +15,15 @@ export default function Home() {
 
   return (
     <>
-      <h1>Home</h1>
       <input
         type="text"
         placeholder="Search"
         name="search"
+        className="home-page__search-input"
         onChange={(e) => {
           debounceSearch(e.target.value);
         }}
       />
-      <button
-        onClick={async function fetchData() {
-          const data = await ImgService.serachImages({ q: "flowers blue" });
-          setRawImgs(data);
-        }}
-      >
-        Get imgs
-      </button>
       {rawImgs != null && <ImgGrid pageData={rawImgs} />}
     </>
   );
