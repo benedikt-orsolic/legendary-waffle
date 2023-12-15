@@ -43,15 +43,42 @@ export type TResult = {
 export default class ImgService {
   static async serachImages(searchParams: {
     /** search string */
-    q: string;
+    q?: string;
+    id?: number;
   }) {
     const params = new URLSearchParams();
-    params.set("q", searchParams.q);
+    if (searchParams.q != null) {
+      params.set("q", searchParams.q);
+    }
+    if (searchParams.id != null) {
+      params.set("id", String(searchParams.id));
+    }
     // params.set("id", "729509,729509");
     const url = BASE_URL + params.toString();
     try {
       const rawResponse = await fetch(url);
       return rawResponse.json();
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  }
+
+  static async getImgsById(imgIds: number[]) {
+    const imgRequests = [];
+
+    for (const id of imgIds) {
+      imgRequests.push(this.serachImages({ id }));
+    }
+
+    try {
+      const responses = await Promise.all(imgRequests);
+
+      return {
+        total: responses.length,
+        totalHits: responses.length,
+        hits: responses.map((r) => r.hits[0]),
+      };
     } catch (e) {
       console.error(e);
       return null;

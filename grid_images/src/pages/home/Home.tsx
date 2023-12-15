@@ -13,7 +13,6 @@ export default function Home() {
     setRawImgs(data);
   });
 
-  const [isLikedImgs, setIsLikedImgs] = React.useState(false);
   const { favorites } = useFavoritesImgs();
 
   return (
@@ -25,12 +24,14 @@ export default function Home() {
           name="search"
           className="home-page__search-input"
           onChange={(e) => {
-            setIsLikedImgs(false);
             debounceSearch(e.target.value);
           }}
         />
         <LikedViewSelectorBtn
-          onClick={() => setIsLikedImgs(true)}
+          onClick={async () => {
+            const data = await ImgService.getImgsById(favorites);
+            setRawImgs(data);
+          }}
           likedImgsCount={favorites.length}
         />
       </nav>
